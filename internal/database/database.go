@@ -38,26 +38,26 @@ func InitDB(PathDB string) {
 	defer db.Close()
 
 	// Create the Task table if not exists
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS tasks (
+	_, tbl_task_err = db.Exec(`CREATE TABLE IF NOT EXISTS tasks (
 		id INTEGER PRIMARY KEY,
 		command TEXT
 	);`)
-	if err != nil {
+	if tbl_task_err != nil {
 		log.Fatal().
-			Err(err).
+			Err(tbl_task_err).
 			Str("module", "database").
 			Msg("Error creating tasks table")
 	}
 
 	// Create the Trigger table if not exists
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS triggers (
+	_, tbl_tgr_err = db.Exec(`CREATE TABLE IF NOT EXISTS triggers (
 		id INTEGER PRIMARY KEY,
 		task_id INTEGER,
 		time TEXT
 	);`)
-	if err != nil {
+	if tbl_tgr_err != nil {
 		log.Fatal().
-			Err(err).
+			Err(tbl_tgr_err).
 			Str("module", "database").
 			Msg("Error creating triggers table")
 	}
