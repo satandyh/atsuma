@@ -48,7 +48,7 @@ func NewConfig() Conf {
 
 	//Flags
 	c.confFlags = pflag.NewFlagSet(os.Args[0], pflag.ExitOnError)
-	configFile := c.confFlags.StringP("config", "c", "", "Config file location. Supported formats {json,toml,yaml}. Default {'$HOME/.atsuma','.','./config','/opt/atsuma'}/config.yml")
+	configFile := c.confFlags.StringP("config", "c", "", "Config file location. Supported formats {json,toml,yaml}. Default path {'$HOME/.atsuma','.','./config','/opt/atsuma'}/config.yml")
 	//c.confFlags.StringP("verbose", "v", "6", "Logging verbosity level. Default 6 level (Info)")
 	help := c.confFlags.BoolP("help", "h", false, "Print help message")
 
@@ -69,10 +69,10 @@ func NewConfig() Conf {
 	if len(*configFile) > 2 {
 		viper.SetConfigFile(*configFile)
 	} else {
-		viper.SetConfigName("config.yml")         // name of config file (without extension)
-		viper.SetConfigType("yaml")               // REQUIRED if the config file does not have the extension in the name
-		viper.AddConfigPath("/opt/atsuma/atsuma") // path to look for the config file in
-		viper.AddConfigPath("$HOME/.atsuma")      // call multiple times to add many search paths
+		viper.SetConfigName("config.yml")    // name of config file (without extension)
+		viper.SetConfigType("yaml")          // REQUIRED if the config file does not have the extension in the name
+		viper.AddConfigPath("/opt/atsuma")   // path to look for the config file in
+		viper.AddConfigPath("$HOME/.atsuma") // call multiple times to add many search paths
 		viper.AddConfigPath("./config")
 		viper.AddConfigPath(".")
 	}

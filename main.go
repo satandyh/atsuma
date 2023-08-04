@@ -23,6 +23,8 @@ var logger = logging.Configure(logConfig)
 func main() {
 
 	conf := config.NewConfig()
+	println(conf.Nmap.Ip)   // test only
+	println(conf.Nmap.Port) // test only
 
 	logger.Info().
 		Str("module", "main").

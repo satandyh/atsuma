@@ -1,3 +1,4 @@
+## EXAMPLE CONFIG
 # nmap tasks
 nmap:
   ip: "127.0.0.1"
