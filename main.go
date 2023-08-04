@@ -2,6 +2,7 @@ package main
 
 import (
 	config "github.com/satandyh/atsuma/internal/config"
+	database "github.com/satandyh/atsuma/internal/database"
 	logging "github.com/satandyh/atsuma/internal/logger"
 )
 
@@ -25,6 +26,9 @@ func main() {
 	conf := config.NewConfig()
 	println(conf.Nmap.Ip)   // test only
 	println(conf.Nmap.Port) // test only
+
+	// init db
+	database.InitDB(conf.DBPath)
 
 	logger.Info().
 		Str("module", "main").

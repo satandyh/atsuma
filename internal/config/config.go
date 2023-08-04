@@ -12,8 +12,24 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Task represents a task in the database
+type Task struct {
+	ID      int
+	Command string
+	State   string
+}
+
+// Trigger represents a trigger condition in the database
+type Trigger struct {
+	ID     int
+	TaskID int
+	Time   string // Assuming cron-like time description as a string
+	State  string
+}
+
 type Conf struct {
-	Nmap struct {
+	DBPath string
+	Nmap   struct {
 		Ip   string
 		Port string
 	}
@@ -45,6 +61,7 @@ func NewConfig() Conf {
 	// Defaults
 	viper.SetDefault("Nmap.Ip", "127.0.0.1")
 	viper.SetDefault("Nmap.Port", "443")
+	viper.SetDefault("DBPath", "./atsuma.db")
 
 	//Flags
 	c.confFlags = pflag.NewFlagSet(os.Args[0], pflag.ExitOnError)

@@ -3,3 +3,6 @@
 nmap:
   ip: "127.0.0.1"
   port: "80"
+
+# database with all our data
+dbpath: "./data/atsuma.db"

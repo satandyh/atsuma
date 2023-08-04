@@ -19,6 +19,7 @@
 
 # Go workspace file
 go.work
+go.sum
 
 # atsuma data directory where result and other staff will be palced
 data/*
