@@ -19,3 +19,6 @@
 
 # Go workspace file
 go.work
+
+# atsuma data directory where result and other staff will be palced
+data/*
