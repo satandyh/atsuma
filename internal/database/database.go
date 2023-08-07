@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 	logging "github.com/satandyh/atsuma/internal/logger"
@@ -27,7 +28,6 @@ var logConfig = logging.LogConfig{
 var log = logging.Configure(logConfig)
 
 func InitDB(PathDB string) {
-
 	db, db_err := sql.Open("sqlite3", PathDB)
 	if db_err != nil {
 		log.Fatal().
@@ -37,29 +37,62 @@ func InitDB(PathDB string) {
 	}
 	defer db.Close()
 
-	// Create the Task table if not exists
-	_, tbl_task_err = db.Exec(`CREATE TABLE IF NOT EXISTS tasks (
-		id INTEGER PRIMARY KEY,
-		command TEXT
-	);`)
-	if tbl_task_err != nil {
+	// try to initialize
+	_, init_err := db.Exec(initDB)
+	if init_err != nil {
 		log.Fatal().
-			Err(tbl_task_err).
+			Err(init_err).
 			Str("module", "database").
-			Msg("Error creating tasks table")
+			Msg("Database initialization error")
+	} else {
+		log.Info().
+			Str("module", "database").
+			Msg("Database initialization success")
 	}
+}
 
-	// Create the Trigger table if not exists
-	_, tbl_tgr_err = db.Exec(`CREATE TABLE IF NOT EXISTS triggers (
-		id INTEGER PRIMARY KEY,
-		task_id INTEGER,
-		time TEXT
-	);`)
-	if tbl_tgr_err != nil {
+func AddExampleData(PathDB string) {
+	db, db_err := sql.Open("sqlite3", PathDB)
+	if db_err != nil {
 		log.Fatal().
-			Err(tbl_tgr_err).
+			Err(db_err).
 			Str("module", "database").
-			Msg("Error creating triggers table")
+			Msg("")
 	}
+	defer db.Close()
 
+	// try to insert example data
+	_, add_err := db.Exec(addExampleData)
+	if add_err != nil {
+		log.Error().
+			Err(add_err).
+			Str("module", "database").
+			Msg("Error cannot insert example data")
+		os.Exit(0)
+	} else {
+		log.Info().
+			Str("module", "database").
+			Msg("Example data inserted")
+	}
+}
+
+func DeleteExampleData(PathDB string) {
+	db, db_err := sql.Open("sqlite3", PathDB)
+	if db_err != nil {
+		log.Fatal().
+			Err(db_err).
+			Str("module", "database").
+			Msg("")
+	}
+	defer db.Close()
+
+	// try to delete example data
+	_, add_err := db.Exec(delExampleData)
+	if add_err != nil {
+		log.Error().
+			Err(add_err).
+			Str("module", "database").
+			Msg("Error cannot delete example data")
+		os.Exit(0)
+	}
 }

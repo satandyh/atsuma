@@ -33,6 +33,7 @@ type Conf struct {
 		Ip   string
 		Port string
 	}
+	Example   bool
 	confFlags *pflag.FlagSet
 }
 
@@ -67,6 +68,7 @@ func NewConfig() Conf {
 	c.confFlags = pflag.NewFlagSet(os.Args[0], pflag.ExitOnError)
 	configFile := c.confFlags.StringP("config", "c", "", "Config file location. Supported formats {json,toml,yaml}. Default path {'$HOME/.atsuma','.','./config','/opt/atsuma'}/config.yml")
 	//c.confFlags.StringP("verbose", "v", "6", "Logging verbosity level. Default 6 level (Info)")
+	c.confFlags.BoolP("example", "e", false, "Insert example data into database. Default - false")
 	help := c.confFlags.BoolP("help", "h", false, "Print help message")
 
 	//parse flags

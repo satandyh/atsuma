@@ -29,6 +29,12 @@ func main() {
 
 	// init db
 	database.InitDB(conf.DBPath)
+	// insert some example data
+	if conf.Example {
+		database.AddExampleData(conf.DBPath)
+	} else {
+		database.DeleteExampleData(conf.DBPath)
+	}
 
 	logger.Info().
 		Str("module", "main").

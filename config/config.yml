@@ -6,3 +6,6 @@ nmap:
 
 # database with all our data
 dbpath: "./data/atsuma.db"
+
+# insert example data to database
+example: false
