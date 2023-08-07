@@ -52,6 +52,20 @@ var logConfig = logging.LogConfig{
 
 var log = logging.Configure(logConfig)
 
+var genConfig = `
+## EXAMPLE CONFIG
+# nmap tasks
+nmap:
+  ip: "127.0.0.1"
+  port: "80"
+
+# database with all our data
+dbpath: "./data/atsuma.db"
+
+# insert example data to database
+example: false
+`
+
 func NewConfig() Conf {
 	var c Conf
 
@@ -69,6 +83,7 @@ func NewConfig() Conf {
 	configFile := c.confFlags.StringP("config", "c", "", "Config file location. Supported formats {json,toml,yaml}. Default path {'$HOME/.atsuma','.','./config','/opt/atsuma'}/config.yml")
 	//c.confFlags.StringP("verbose", "v", "6", "Logging verbosity level. Default 6 level (Info)")
 	c.confFlags.BoolP("example", "e", false, "Insert example data into database. Default - false")
+	generate := c.confFlags.BoolP("generate-config", "g", false, "Generate example config to stdout. Default - false")
 	help := c.confFlags.BoolP("help", "h", false, "Print help message")
 
 	//parse flags
@@ -82,6 +97,10 @@ func NewConfig() Conf {
 	if *help {
 		fmt.Println("Usage of atsuma:")
 		c.confFlags.PrintDefaults()
+		os.Exit(0)
+	}
+	if *generate {
+		fmt.Println(genConfig)
 		os.Exit(0)
 	}
 
