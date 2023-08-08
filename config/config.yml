@@ -1,11 +1,171 @@
 ## EXAMPLE CONFIG
-# nmap tasks
-nmap:
-  ip: "127.0.0.1"
-  port: "80"
-
 # database with all our data
 dbpath: "./data/atsuma.db"
 
 # insert example data to database
 example: false
+
+##EXAMPLE DATA
+# tasks to execute - it's bash commands with additional fields
+# {in} and {out} represent's files! if you want to use them in different way - better to use some bash cycle for that
+# task's start/end/failure datetime and state will be added automatically
+# each task has it's own uniq uuid so name, comments, metadata may repeate anytime
+# all task commands and parsers will be executed in separate temp work directory, which will be deleted after task ends. so you can use this folder whatever you want
+task:
+  ####
+  # SIMPLE NMAP TASK
+  ####
+  - comment: "nmap open port scan"
+    metadata:
+      - key: "nmap"
+        value: "open ports diff"
+    command: |
+      nmap -nP -p80,443 -iL {in} -oG {out}
+    in:
+      comment: ~
+      parse: >
+        grep -E -e "^65." {in}
+      target:
+        and:
+          - comment: "got some"
+            state: "end"
+            metadata:
+              limit: 1
+              order: desc
+              and:
+                - key: "nmap.targets.open.ports"
+                  value: "local"
+    out:
+      comment: ~
+      parse: >
+        grep open {out}
+    lifetime:
+      # sec min hour day month
+      add: "3 25 16 15 17"
+      last: 1694183931 # Date and time (GMT): Friday, 8 September 2023 14:38:51
+    trigger:
+      or:
+        # gives true and counter(wait sec)
+        - comment: "once"
+          condition:
+            type: "cron"
+            state: "end"
+            value: "02 2 14 2 3 3"
+        # gives true and counter(now) if some statements were found
+        - comment: "self fail"
+          condition:
+            type: "task"
+            state: "failure"
+            metadata:
+              limit: 1
+              order: desc
+              and:
+                - key: "nmap"
+                  value: "open ports diff"
+    alert:
+      - comment: "to stdout"
+        type: "stdout"
+        msg: "nmap scan end"
+        detail:
+          msg: "some msg {out} with a details inside"
+          parse: >
+            grep "65.128" {out} | cut -d" " -f2
+
+  ####
+  # DESCRIPTION OF EACH FIELD
+  ####
+  - comment: "nmap open port scan"
+    metadata:
+      - key: "whatever you want add"
+        value: "any data"
+    # some bash command with {in} and {out}
+    command: >
+      nmap -nP -iL {in} -oG {out}
+    # if {in} present then it means that command will use some data from database
+    # so we need to know task or table from which we should to get data
+    # we can use uuid for this if we know
+    in:
+      comment: ~
+      # some bash command with output to stdout
+      parse: >
+        dfddfd
+        dfdfdfd
+        dfdfdfddffff
+      target:
+        - comment: "local"
+          # search by database
+          metadata:
+            any: # or all
+              # some bash regex
+              - key: "some key to look"
+                value: "asfdfsafsa"
+    out:
+      comment: ~
+      # some bash command with output to stdout
+      parse: >
+        dfdfdfd
+    #state:
+    #  - none
+    #  - running
+    #  - failure
+    #  - processed
+    #  - processing
+    #  - end
+    # owned: uuid session of who own to process this task
+    trigger:
+      # conditions for trigger
+      any: # or all
+        - comment: "once"
+          condition:
+            type: "cron"
+            state: "end"
+            # sec min hour day month week_day
+            value: "02 2 14 2 3 3"
+        - comment: "self fail"
+          condition:
+            type: "task"
+            state: "failure"
+            # search by database
+            metadata:
+              any: # or all
+                # some bash regex
+                - key: "some key to look"
+                  value: "asfdfsafsa"
+    alert:
+      - comment: "port scan end"
+        type: "stdout" # stdout syslog slack
+        msg: ""
+        detail:
+          msg: "some msg {} with a details inside"
+          # some bash command
+          # for output parse
+          parse: >
+            asfd
+          # search by database
+          metadata:
+            any: # or all
+              # some bash regex
+              - key: "some key to look"
+                value: "asfdfsafsa"
+
+  ####
+  # RESULTS ANALYZE TASK
+  ####
+  - comment: "analyze results of nmap"
+    # some bash command
+    command: >
+      adfasdf {input}
+    in:
+      name: "some results"
+      parse: >
+        afdasfas
+      target:
+        - name: "nmap results"
+          uuid: "df23fa48-467b-4c8b-8d0b-946afab8ad39"
+    out:
+      name: "asfdasfs"
+      parse: >
+        dfd
+    trigger:
+      any:
+        - name: "after nmap end"
